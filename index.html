@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Siswa - DAPOSIS</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="hidden">
+        <div class="spinner"></div>
+        <p>Memuat...</p>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast-container"></div>
+
+    <!-- Navbar (Hidden on Login) -->
+    <nav id="navbar" class="hidden">
+        <div class="nav-content">
+            <div class="nav-brand">
+                <i data-lucide="school"></i>
+                <span>Portal Siswa</span>
+            </div>
+            <div class="nav-user">
+                <span id="nav-user-name">Siswa</span>
+                <button id="btn-logout" class="btn-icon" title="Keluar">
+                    <i data-lucide="log-out"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main id="app-container">
+
+        <!-- 1. LOGIN SECTION -->
+        <section id="login-section" class="active">
+            <div class="login-card">
+                <div class="login-header">
+                    <img src="logo_daposis.png" alt="Logo" class="login-logo">
+                    <h2>DAPOSIS</h2>
+                    <p>Portal Login Siswa</p>
+                </div>
+                <form id="form-login">
+                    <div class="form-group">
+                        <label>NISN</label>
+                        <div class="input-icon">
+                            <i data-lucide="user"></i>
+                            <input type="text" id="login-nisn" placeholder="Nomor Induk Siswa Nasional" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Tanggal Lahir</label>
+                        <div class="input-icon">
+                            <i data-lucide="calendar"></i>
+                            <input type="date" id="login-tgl" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary w-full">Masuk</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- 2. DASHBOARD SECTION -->
+        <section id="dashboard-section" class="hidden">
+            <header class="section-header">
+                <h1 id="dash-welcome">Selamat Datang</h1>
+                <p>Ringkasan data akademik Anda</p>
+            </header>
+
+            <!-- Progress Card -->
+            <div class="card progress-card">
+                <div class="progress-header">
+                    <h3>Kelengkapan Biodata</h3>
+                    <span id="progress-percent">0%</span>
+                </div>
+                <div class="progress-track">
+                    <div id="progress-bar" class="progress-fill" style="width: 0%"></div>
+                </div>
+                <div class="progress-status">
+                    Status: <span id="progress-status-text">Belum Lengkap</span>
+                </div>
+            </div>
+
+            <!-- Profile Info -->
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header">
+                        <i data-lucide="user"></i> Detail Profil
+                    </div>
+                    <div class="info-row">
+                        <span>Nama Lengkap</span>
+                        <strong id="dash-nama">-</strong>
+                    </div>
+                    <div class="info-row">
+                        <span>NISN</span>
+                        <strong id="dash-nisn">-</strong>
+                    </div>
+                    <div class="info-row">
+                        <span>Status</span>
+                        <span id="dash-status" class="badge badge-success">-</span>
+                    </div>
+                </div>
+
+                <!-- Menu Shortcuts -->
+                <div class="card">
+                    <div class="card-header">
+                        <i data-lucide="grid"></i> Menu Cepat
+                    </div>
+                    <div class="menu-list">
+                        <button onclick="window.location.hash='#biodata'" class="menu-item">
+                            <div class="icon-box blue"><i data-lucide="file-text"></i></div>
+                            <span>Biodata Diri</span>
+                            <i data-lucide="chevron-right" class="arrow"></i>
+                        </button>
+                        <button onclick="window.location.hash='#orang-tua'" class="menu-item">
+                            <div class="icon-box pink"><i data-lucide="users"></i></div>
+                            <span>Data Orang Tua</span>
+                            <i data-lucide="chevron-right" class="arrow"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. BIODATA FORM SECTION -->
+        <section id="biodata-section" class="hidden">
+            <header class="section-header flex-between">
+                <div>
+                    <h1>Biodata Diri</h1>
+                    <p>Lengkapi data pribadi Anda</p>
+                </div>
+                <button onclick="window.location.hash='#dashboard'" class="btn-secondary">
+                    <i data-lucide="arrow-left"></i> Kembali
+                </button>
+            </header>
+
+            <div class="card">
+                <form id="form-biodata">
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label>Alamat Lengkap</label>
+                            <textarea id="bio-alamat" rows="3" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>No. Telepon / WA</label>
+                            <input type="text" id="bio-telepon" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Status Tempat Tinggal</label>
+                            <select id="bio-status-tinggal" required>
+                                <option value="">- Pilih -</option>
+                                <option value="Bersama Orang Tua">Bersama Orang Tua</option>
+                                <option value="Kost">Kost</option>
+                                <option value="Wali">Wali</option>
+                                <option value="Asrama">Asrama</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Pendidikan Sebelumnya (SMP/MTs)</label>
+                            <input type="text" id="bio-sekolah-asal" required>
+                        </div>
+                        <div class="form-group">
+                            <label>No. Ijazah Sebelumnya</label>
+                            <input type="text" id="bio-no-ijazah">
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <div id="locked-message" class="locked-alert hidden">
+                            <i data-lucide="lock"></i> Data sudah difinalisasi. Hubungi operator untuk ubah.
+                        </div>
+                        <div id="bio-buttons">
+                            <button type="button" id="btn-bio-draft" class="btn-secondary">Simpan Sementara</button>
+                            <button type="submit" id="btn-bio-final" class="btn-primary">Finalisasi Data</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- 4. ORANG TUA FORM SECTION -->
+        <section id="orang-tua-section" class="hidden">
+            <header class="section-header flex-between">
+                <div>
+                    <h1>Data Orang Tua</h1>
+                    <p>Data Ayah dan Ibu Kandung</p>
+                </div>
+                <button onclick="window.location.hash='#dashboard'" class="btn-secondary">
+                    <i data-lucide="arrow-left"></i> Kembali
+                </button>
+            </header>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab-btn active" data-target="ayah">Data Ayah</button>
+                <button class="tab-btn" data-target="ibu">Data Ibu</button>
+            </div>
+
+            <div class="card">
+                <form id="form-orang-tua">
+                    <!-- Hidden field to track active tab -->
+                    <input type="hidden" id="ortu-jenis" value="ayah">
+                    <input type="hidden" id="ortu-id-ayah">
+                    <input type="hidden" id="ortu-id-ibu">
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Nama Lengkap</label>
+                            <input type="text" id="ortu-nama" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Tempat, Tanggal Lahir</label>
+                            <input type="text" id="ortu-ttl" placeholder="Kota, DD-MM-YYYY">
+                        </div>
+                        <div class="form-group">
+                            <label>Agama</label>
+                            <select id="ortu-agama">
+                                <option value="Islam">Islam</option>
+                                <option value="Kristen">Kristen</option>
+                                <option value="Katolik">Katolik</option>
+                                <option value="Hindu">Hindu</option>
+                                <option value="Buddha">Buddha</option>
+                                <option value="Konghucu">Konghucu</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Pekerjaan</label>
+                            <input type="text" id="ortu-pekerjaan">
+                        </div>
+                        <div class="form-group">
+                            <label>Penghasilan Bulanan</label>
+                            <input type="number" id="ortu-penghasilan" placeholder="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Status Hidup</label>
+                            <select id="ortu-status-hidup">
+                                <option value="Hidup">Hidup</option>
+                                <option value="Meninggal">Meninggal</option>
+                                <option value="Bercerai">Bercerai</option>
+                            </select>
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Alamat Saat Ini</label>
+                            <textarea id="ortu-alamat" rows="2"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-actions right">
+                        <button type="submit" class="btn-primary">Simpan Data <span id="lbl-btn-ortu">Ayah</span></button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- App Logic -->
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>

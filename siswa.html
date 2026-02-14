@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portal Siswa - DAPOSIS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #111827; /* gray-900 */
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .animate-fade-in {
+        animation: fadeIn 0.3s ease-out forwards;
+      }
+    </style>
+    <!-- Import Map identik dengan root untuk konsistensi modul -->
+    <script type="importmap">
+    {
+      "imports": {
+        "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@^2.95.3",
+        "react/": "https://esm.sh/react@^19.2.4/",
+        "react": "https://esm.sh/react@^19.2.4",
+        "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
+        "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+        "react-dom": "https://esm.sh/react-dom@^19.2.4",
+        "react-router-dom": "https://esm.sh/react-router-dom@^7.13.0",
+        "jspdf": "https://esm.sh/jspdf@2.5.1",
+        "jspdf-autotable": "https://esm.sh/jspdf-autotable@3.8.1",
+        "recharts": "https://esm.sh/recharts@2.12.0?external=react,react-dom",
+        "xlsx": "https://esm.sh/xlsx@0.18.5",
+        "react-window": "https://esm.sh/react-window@1.8.10?external=react,react-dom",
+        "react-virtualized-auto-sizer": "https://esm.sh/react-virtualized-auto-sizer@1.0.24?external=react,react-dom"
+      }
+    }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- 
+      Memuat entry point React dari folder root (parent).
+      Karena menggunakan ES Modules native, browser akan me-resolve path 
+      relatif terhadap file yang di-import, sehingga struktur project tetap terjaga.
+    -->
+    <script type="module" src="../index.tsx"></script>
+  </body>
+</html>
